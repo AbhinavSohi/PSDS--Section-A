@@ -1,0 +1,247 @@
+# class Stack:
+#     def __init__(self):
+#         self.stack = []
+
+#     def push(self, item):
+#         self.stack.append(item)
+
+#     def pop(self):
+#         if not self.is_empty():
+#             return self.stack.pop()
+#         return None
+
+#     def peek(self):
+#         if not self.is_empty():
+#             return self.stack[-1]
+#         return None
+
+#     def is_empty(self):
+#         return len(self.stack) == 0
+
+
+# def precedence(operator):
+#     if operator == '+' or operator == '-':
+#         return 1
+#     elif operator == '*' or operator == '/':
+#         return 2
+#     elif operator == '^':
+#         return 3
+#     return 0
+
+
+# def infix_to_postfix(expression):
+#     stack = Stack()
+#     postfix = ""
+
+#     for ch in expression:
+
+#         # If character is an operand
+#         if ch.isalnum():
+#             postfix += ch
+
+#         # If opening bracket
+#         elif ch == '(':
+#             stack.push(ch)
+
+#         # If closing bracket
+#         elif ch == ')':
+#             while stack.peek() != '(':
+#                 postfix += stack.pop()
+#             stack.pop()   # Remove '('
+
+#         # If operator
+#         else:
+#             while (not stack.is_empty() and
+#                    stack.peek() != '(' and
+#                    precedence(stack.peek()) >= precedence(ch)):
+#                 postfix += stack.pop()
+
+#             stack.push(ch)
+
+#     # Pop remaining operators
+#     while not stack.is_empty():
+#         postfix += stack.pop()
+
+#     return postfix
+
+
+# # Main Program
+# expression = input("Enter Infix Expression: ")
+
+# result = infix_to_postfix(expression)
+
+# print("Postfix Expression:", result)
+
+# Q2....................................................................................................
+
+# class Stack:
+#     def __init__(self):
+#         self.stack = []
+
+#     def push(self, value):
+#         self.stack.append(value)
+
+#     def pop(self):
+#         if self.is_empty():
+#             raise IndexError("Pop from empty stack")
+#         return self.stack.pop()
+
+#     def is_empty(self):
+#         return len(self.stack) == 0
+
+
+# def evaluate_postfix(expression):
+#     stack = Stack()
+
+#     for ch in expression:
+#         if ch == " ":
+#             continue
+
+#         # ✅ Handle multi-digit numbers or variables
+#         if ch.isdigit():
+#             stack.push(int(ch))
+#         elif ch.isalpha():
+#             # For variables like A, B, C → assign values here
+#             values = {'A': 2, 'B': 3, 'C': 4}  # example mapping
+#             stack.push(values[ch])
+#         else:
+#             # Check stack length before popping
+#             if len(stack.stack) < 2:
+#                 raise ValueError("Invalid postfix expression")
+
+#             b = stack.pop()
+#             a = stack.pop()
+
+#             if ch == "+":
+#                 result = a + b
+#             elif ch == "-":
+#                 result = a - b
+#             elif ch == "*":
+#                 result = a * b
+#             elif ch == "/":
+#                 result = a // b
+
+#             stack.push(result)
+
+#     if len(stack.stack) != 1:
+#         raise ValueError("Invalid postfix expression")
+
+#     return stack.pop()
+
+
+# expression = input("Enter Postfix Expression: ")
+# answer = evaluate_postfix(expression)
+# print("Final Result:", answer)
+
+
+
+
+# Q3....................................................................
+
+# Binary Search Tree implementation
+
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.key = key
+
+
+class BST:
+    def __init__(self):
+        self.root = None
+
+    # Insert a node
+    def insert(self, root, key):
+        if root is None:
+            return Node(key)
+
+        if key < root.key:
+            root.left = self.insert(root.left, key)
+        elif key > root.key:
+            root.right = self.insert(root.right, key)
+
+        return root
+
+    # Find the minimum value node
+    def min_value_node(self, root):
+        current = root
+
+        while current.left is not None:
+            current = current.left
+
+        return current
+
+    # Delete a node
+    def delete(self, root, key):
+        if root is None:
+            return root
+
+        if key < root.key:
+            root.left = self.delete(root.left, key)
+
+        elif key > root.key:
+            root.right = self.delete(root.right, key)
+
+        else:
+            # Node has no left child
+            if root.left is None:
+                return root.right
+
+            # Node has no right child
+            elif root.right is None:
+                return root.left
+
+            # Node has two children
+            temp = self.min_value_node(root.right)
+            root.key = temp.key
+            root.right = self.delete(root.right, temp.key)
+
+        return root
+
+    # Inorder: Left -> Root -> Right
+    def inorder(self, root):
+        if root:
+            self.inorder(root.left)
+            print(root.key, end=" ")
+            self.inorder(root.right)
+
+    # Preorder: Root -> Left -> Right
+    def preorder(self, root):
+        if root:
+            print(root.key, end=" ")
+            self.preorder(root.left)
+            self.preorder(root.right)
+
+    # Postorder: Left -> Right -> Root
+    def postorder(self, root):
+        if root:
+            self.postorder(root.left)
+            self.postorder(root.right)
+            print(root.key, end=" ")
+
+
+# Main program
+bst = BST()
+
+# Insertion
+values = [50, 30, 70, 20, 40, 60, 80]
+
+for value in values:
+    bst.root = bst.insert(bst.root, value)
+
+print("Inorder Traversal:")
+bst.inorder(bst.root)
+
+print("\nPreorder Traversal:")
+bst.preorder(bst.root)
+
+print("\nPostorder Traversal:")
+bst.postorder(bst.root)
+
+# Deletion
+print("\n\nDeleting 30...")
+bst.root = bst.delete(bst.root, 30)
+
+print("Inorder after deletion:")
+bst.inorder(bst.root)
