@@ -1,0 +1,317 @@
+import mysql.connector
+from tabulate import tabulate
+
+
+# 1. CONNECT TO MYSQL
+
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Abhinav@123"
+)
+
+cursor = connection.cursor()
+
+print("\nConnected to MySQL successfully!")
+
+
+# ==========================================================
+# 2. CREATE DATABASE
+# ==========================================================
+
+cursor.execute("CREATE DATABASE IF NOT EXISTS CollegeDB")
+
+print("Database 'CollegeDB' created successfully!")
+
+# Select database
+cursor.execute("USE CollegeDB")
+
+
+# ==========================================================
+# 3. CREATE DEPARTMENT TABLE
+# ==========================================================
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS Department (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(100) NOT NULL
+)
+""")
+
+print("Department table created successfully!")
+
+
+# ==========================================================
+# 4. CREATE STUDENT TABLE
+# ==========================================================
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS Student (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    dept_id INT,
+    FOREIGN KEY (dept_id)
+        REFERENCES Department(dept_id)
+)
+""")
+
+print("Student table created successfully!")
+
+
+# ==========================================================
+# 5. CREATE COURSE TABLE
+# ==========================================================
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS Course (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL,
+    credits INT NOT NULL,
+    dept_id INT,
+    FOREIGN KEY (dept_id)
+        REFERENCES Department(dept_id)
+)
+""")
+
+print("Course table created successfully!")
+
+
+# ==========================================================
+# 6. CREATE ENROLLMENT TABLE
+# ==========================================================
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS Enrollment (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    FOREIGN KEY (student_id)
+        REFERENCES Student(student_id),
+    FOREIGN KEY (course_id)
+        REFERENCES Course(course_id)
+)
+""")
+
+print("Enrollment table created successfully!")
+
+
+# ==========================================================
+# 7. INSERT DEPARTMENT DATA
+# ==========================================================
+
+departments = [
+    (1, "Computer Science"),
+    (2, "Mechanical Engineering"),
+    (3, "Electrical Engineering")
+]
+
+cursor.executemany("""
+INSERT IGNORE INTO Department
+(dept_id, dept_name)
+VALUES (%s, %s)
+""", departments)
+
+
+# ==========================================================
+# 8. INSERT STUDENT DATA
+# ==========================================================
+
+students = [
+    (101, "Abhinav Sohi", "abhinav@gmail.com", 1),
+    (102, "Rahul Sharma", "rahul@gmail.com", 1),
+    (103, "Aman Kumar", "aman@gmail.com", 2),
+    (104, "Priya Singh", "priya@gmail.com", 3)
+]
+
+cursor.executemany("""
+INSERT IGNORE INTO Student
+(student_id, student_name, email, dept_id)
+VALUES (%s, %s, %s, %s)
+""", students)
+
+
+# ==========================================================
+# 9. INSERT COURSE DATA
+# ==========================================================
+
+courses = [
+    (201, "Database Management System", 3, 1),
+    (202, "Data Structures", 3, 1),
+    (203, "Maths", 3, 2),
+    (204, "SQL", 2, 3)
+]
+
+cursor.executemany("""
+INSERT IGNORE INTO Course
+(course_id, course_name, credits, dept_id)
+VALUES (%s, %s, %s, %s)
+""", courses)
+
+
+# ==========================================================
+# 10. INSERT ENROLLMENT DATA
+# ==========================================================
+
+enrollments = [
+    (1, 101, 201),
+    (2, 101, 202),
+    (3, 102, 201),
+    (4, 103, 203),
+    (5, 104, 204)
+]
+
+cursor.executemany("""
+INSERT IGNORE INTO Enrollment
+(enrollment_id, student_id, course_id)
+VALUES (%s, %s, %s)
+""", enrollments)
+
+
+# Save all changes
+connection.commit()
+
+print("\nAll sample records inserted successfully!")
+
+
+# ==========================================================
+# 11. DISPLAY DEPARTMENT TABLE
+# ==========================================================
+
+print("\n\n" + "=" * 65)
+print("                    DEPARTMENT TABLE")
+print("=" * 65)
+
+cursor.execute("SELECT * FROM Department")
+
+rows = cursor.fetchall()
+
+print(tabulate(
+    rows,
+    headers=["Dept ID", "Department Name"],
+    tablefmt="grid"
+))
+
+
+# ==========================================================
+# 12. DISPLAY STUDENT TABLE
+# ==========================================================
+
+print("\n\n" + "=" * 65)
+print("                      STUDENT TABLE")
+print("=" * 65)
+
+cursor.execute("SELECT * FROM Student")
+
+rows = cursor.fetchall()
+
+print(tabulate(
+    rows,
+    headers=["Student ID", "Student Name", "Email", "Dept ID"],
+    tablefmt="grid"
+))
+
+
+# ==========================================================
+# 13. DISPLAY COURSE TABLE
+# ==========================================================
+
+print("\n\n" + "=" * 65)
+print("                       COURSE TABLE")
+print("=" * 65)
+
+cursor.execute("SELECT * FROM Course")
+
+rows = cursor.fetchall()
+
+print(tabulate(
+    rows,
+    headers=["Course ID", "Course Name", "Credits", "Dept ID"],
+    tablefmt="grid"
+))
+
+
+# ==========================================================
+# 14. DISPLAY ENROLLMENT TABLE
+# ==========================================================
+
+print("\n\n" + "=" * 65)
+print("                    ENROLLMENT TABLE")
+print("=" * 65)
+
+cursor.execute("SELECT * FROM Enrollment")
+
+rows = cursor.fetchall()
+
+print(tabulate(
+    rows,
+    headers=["Enrollment ID", "Student ID", "Course ID"],
+    tablefmt="grid"
+))
+
+
+# ==========================================================
+# 15. DISPLAY PRIMARY KEY AND FOREIGN KEY INFORMATION
+# ==========================================================
+
+print("\n\n" + "=" * 65)
+print("             PRIMARY KEY / FOREIGN KEY DETAILS")
+print("=" * 65)
+
+cursor.execute("""
+SELECT
+    TABLE_NAME,
+    COLUMN_NAME,
+    CONSTRAINT_NAME,
+    REFERENCED_TABLE_NAME,
+    REFERENCED_COLUMN_NAME
+FROM information_schema.KEY_COLUMN_USAGE
+WHERE TABLE_SCHEMA = 'CollegeDB'
+AND (REFERENCED_TABLE_NAME IS NOT NULL
+     OR CONSTRAINT_NAME = 'PRIMARY')
+ORDER BY TABLE_NAME;
+""")
+
+rows = cursor.fetchall()
+
+print(tabulate(
+    rows,
+    headers=[
+        "Table",
+        "Column",
+        "Constraint",
+        "Referenced Table",
+        "Referenced Column"
+    ],
+    tablefmt="grid"
+))
+
+
+# ==========================================================
+# 16. DISPLAY TABLE NAMES
+# ==========================================================
+
+print("\n\n" + "=" * 65)
+print("                   DATABASE TABLES")
+print("=" * 65)
+
+cursor.execute("SHOW TABLES")
+
+rows = cursor.fetchall()
+
+print(tabulate(
+    rows,
+    headers=["Table Name"],
+    tablefmt="grid"
+))
+
+
+# ==========================================================
+# 17. CLOSE CONNECTION
+# ==========================================================
+
+cursor.close()
+connection.close()
+
+print("\nMySQL connection closed successfully!")
+print("\nLab 4 completed successfully!")
