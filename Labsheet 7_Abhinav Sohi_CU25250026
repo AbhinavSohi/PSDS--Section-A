@@ -1,0 +1,81 @@
+import heapq
+
+# Input
+a = list(map(int, input("Enter elements: ").split()))
+
+# Min Heap
+min_heap = a.copy()
+heapq.heapify(min_heap)
+print("Min Heap:", min_heap)
+
+# Max Heap
+max_heap = [-x for x in a]
+heapq.heapify(max_heap)
+print("Max Heap:", [-x for x in max_heap])
+
+# Priority Queue (Min Priority Queue)
+pq = []
+for x in a:
+    heapq.heappush(pq, x)
+
+print("Priority Queue:", end=" ")
+while pq:
+    print(heapq.heappop(pq), end=" ")
+
+# Heap Sort
+print("\nHeap Sort:", sorted(a))
+
+# Q2--------------------------------------------------------------------------------------------------------
+
+# def maximize_diff(a):
+#     a.sort()
+#     n = len(a)
+#     res = []
+
+#     i, j = 0, n - 1
+#     while i <= j:
+#         if i <= j:
+#             res.append(a[i])
+#             i += 1
+#         if i <= j:
+#             res.append(a[j])
+#             j -= 1
+
+#     r1 = res
+#     r2 = res[::-1]
+
+#     s1 = sum(abs(r1[i] - r1[i-1]) for i in range(1, n))
+#     s2 = sum(abs(r2[i] - r2[i-1]) for i in range(1, n))
+
+#     return (r1, s1) if s1 >= s2 else (r2, s2)
+
+
+# a = list(map(int, input("Enter elements: ").split()))
+
+# ans, total = maximize_diff(a)
+
+# print("Rearranged array:", ans)
+# print("Maximum sum:", total)
+
+# # Q3--------------------------------------------------------------------------------------------------------
+# def smallest_subarray(arr, target):
+#     left = 0
+#     total = 0
+#     ans = len(arr) + 1
+
+#     for right in range(len(arr)):
+#         total += arr[right]
+
+#         while total > target:
+#             ans = min(ans, right - left + 1)
+#             total -= arr[left]
+#             left += 1
+
+#     return -1 if ans == len(arr) + 1 else ans
+
+
+# # Input
+# arr = list(map(int, input("Enter elements: ").split()))
+# target = int(input("Enter target: "))
+
+# print("Smallest subarray length:", smallest_subarray(arr, target))
