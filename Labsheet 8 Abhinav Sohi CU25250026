@@ -1,0 +1,81 @@
+# print("Program started")
+
+# n, k = map(int, input("Enter N and K: ").split())
+
+# arr = list(map(int, input("Enter array: ").split()))
+
+# current_sum = sum(arr[:k])
+# max_sum = current_sum
+
+# for i in range(k, n):
+#     current_sum += arr[i] - arr[i - k]
+
+#     if current_sum > max_sum:
+#         max_sum = current_sum
+
+# print("Maximum sum =", max_sum)
+
+#Q2__________________________________________________________________________________________________
+
+# print("Program started")
+
+# s = input("Enter string: ")
+
+# seen = set()
+# left = 0
+# max_length = 0
+
+# for right in range(len(s)):
+
+#     while s[right] in seen:
+#         seen.remove(s[left])
+#         left += 1
+
+#     seen.add(s[right])
+
+#     length = right - left + 1
+
+#     if length > max_length:
+#         max_length = length
+
+# print("Longest substring length =", max_length)
+
+#Q3__________________________________________________________________________________________________
+
+# print("Program started")
+
+# n, m, k = map(int, input("Enter N, M and K: ").split())
+
+# edges = []
+
+# print("Enter edges:")
+
+# for i in range(m):
+#     u, v, w = map(int, input().split())
+#     edges.append((u, v, w))
+
+# INF = float('inf')
+
+# dp = [INF] * (n + 1)
+# dp[1] = 0
+
+# for _ in range(k):
+
+#     new_dp = dp.copy()
+
+#     for u, v, w in edges:
+
+#         # u -> v
+#         if dp[u] != INF:
+#             new_dp[v] = min(new_dp[v], dp[u] + w)
+
+#         # v -> u because graph is undirected
+#         if dp[v] != INF:
+#             new_dp[u] = min(new_dp[u], dp[v] + w)
+
+#     dp = new_dp
+
+# if dp[n] == INF:
+#     print("Shortest path = -1")
+# else:
+#     print("Shortest path =", dp[n])
