@@ -1,0 +1,54 @@
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+# ---------- Stack Implementation ----------
+class Stack:
+    def __init__(self):
+        self.top = None
+
+    def push(self, x):
+        p = Node(x)
+        p.next = self.top
+        self.top = p
+
+    def pop(self):
+        if self.top is None:
+            print("Stack is empty")
+        else:
+            p = self.top
+            print("Popped:", p.data)
+            self.top = self.top.next
+            del p
+
+    def display(self):
+        p = self.top
+        print("Stack:", end=" ")
+        while p:
+            print(p.data, end=" ")
+            p = p.next
+        print()
+
+
+# ---------- Queue Implementation ----------
+class Queue:
+    def __init__(self):
+        self.front = None
+        self.rear = None
+
+    def enqueue(self, x):
+        p = Node(x)
+        if self.rear is None:
+            self.front = self.rear = p
+        else:
+            self.rear.next = p
+            self.rear = p
+
+    def dequeue(self):
+        if self.front is None:
+            print("Queue is empty")
+        else:
+            p = self.front
+            print
