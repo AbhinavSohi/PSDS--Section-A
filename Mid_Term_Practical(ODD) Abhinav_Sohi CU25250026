@@ -1,0 +1,15 @@
+
+from collections import Counter
+
+T = int(input("Enter number of test cases: "))
+
+for _ in range(T):
+    S = input("Enter string: ").strip()
+    freq = Counter(S)
+
+    ans = 0
+    for count in freq.values():
+        ans += count // 2
+
+    print(ans)
+
