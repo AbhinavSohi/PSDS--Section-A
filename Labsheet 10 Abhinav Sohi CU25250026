@@ -1,0 +1,24 @@
+def digit_sum(x):
+    x = abs(x)
+    s = 0
+    while x:
+        s += x % 10
+        x //= 10
+    return s
+
+def solve(N, nums):
+    freq = {}
+    count = 0
+    for num in nums:
+        s = digit_sum(num)
+        if s in freq:
+            count += freq[s]   # pairs with earlier numbers having the same digit sum
+            freq[s] += 1
+        else:
+            freq[s] = 1
+    return count
+
+if __name__ == "__main__":
+    N = int(input("Enter N: "))
+    nums = list(map(int, input("Enter numbers: ").split()))
+    print(solve(N, nums))
